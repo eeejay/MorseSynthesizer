@@ -352,7 +352,7 @@ Copyright (C) 2011 Apple Inc. All Rights Reserved.
 	/*
 	 * Test for currently active speech
 	 */
-	if ([self isActive])
+       if ([self isActive]) {
 		if (noInterrupt) {
 			return synthNotReady;
 		} else {
@@ -360,7 +360,8 @@ Copyright (C) 2011 Apple Inc. All Rights Reserved.
 			while ([self isActive])
 				usleep(5000);	// Test again in 5ms
 		}
-			
+    }
+
 	synthState	= kSynthStopped;
 	pauseToken	= kMorseNone;
 	
@@ -516,13 +517,15 @@ Copyright (C) 2011 Apple Inc. All Rights Reserved.
 - (void)createSoundChannel:(BOOL)forAudioUnit
 {
 	dispatch_sync(queue, ^{
-			if (!audioOutput)
-				if (audioFileRef == (ExtAudioFileRef)-1)
+                       if (!audioOutput) {
+                               if (audioFileRef == (ExtAudioFileRef)-1) {
 					audioOutput = [AudioOutput createIgnoreAudio];
-				else if (audioFileRef)
+                               } else if (audioFileRef) {
 					audioOutput = [AudioOutput createFileAudio:audioFileRef];
-				else
+                               } else {
 					audioOutput = [AudioOutput createLiveAudio:forAudioUnit withDevice:audioDevice];
+                               }
+                       }
 		});
 }
 

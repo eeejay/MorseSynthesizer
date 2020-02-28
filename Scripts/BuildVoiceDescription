@@ -48,7 +48,7 @@
 # Copyright (C) 2011 Apple Inc. All Rights Reserved.
 #
 
-require 'ftools'
+require 'fileutils'
 
 GENDER = {
   :neuter => 0,
@@ -115,8 +115,8 @@ def characterSet(set)
    end.join("") + ("\n%16s</array>" % [""])
 end
 
-File.makedirs(File.dirname(ARGV[1]))
-File.open(ARGV[1], 'w') do |OUT|
+FileUtils.makedirs(File.dirname(ARGV[1]))
+File.open(ARGV[1], 'w') do |out|
   if $GENERATE_BINARY
     if script > 32767
       longScript = script
@@ -124,16 +124,16 @@ File.open(ARGV[1], 'w') do |OUT|
     else
       longScript = 0
     end
-    OUT.print [0x016a, voice_creator, voice_id, version, name.length, name, demo_text.length, demo_text, 
+    out.print [0x016a, voice_creator, voice_id, version, name.length, name, demo_text.length, demo_text,
                gender, age, script, language, region, longScript, 0, 0, 0].pack('N A4A4 N Ca63 Ca255 nnnnn NNNN')
   else
-    OUT.print <<END
+    out.print <<END
         <key>VoiceAttributes</key>
 	<dict>
 		<key>VoiceSynthesizerNumericID</key>
-		<integer>#{voice_creator.unpack('N')}</integer>
+		<integer>#{voice_creator.unpack('N')[0]}</integer>
 		<key>VoiceNumericID</key>
-		<integer>#{voice_id.unpack('N')}</integer>
+		<integer>#{voice_id.unpack('N')[0]}</integer>
 		<key>VoiceVersion</key> <integer>#{version}</integer>
 		<key>VoiceName</key> <string>#{name}</string>
 		<key>VoiceDemoText</key> <string>#{demo_text}</string>
